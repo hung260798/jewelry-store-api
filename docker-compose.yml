@@ -1,0 +1,54 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_server
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+      
+    networks:
+      - app-net
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "9000:9000"
+
+    volumes:
+      # mount source code
+      - .:/app
+
+      # giữ node_modules trong container
+      - node_modules:/app/node_modules
+
+    restart: always
+  
+    
+    depends_on:
+      - redis
+
+
+    networks:
+      - app-net
+      
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+    command: npm run dev
+  
+  
+
+volumes:
+  node_modules:
+  redis_data:
+
+networks:
+  app-net:
+    driver: bridge

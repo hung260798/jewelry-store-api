@@ -1,0 +1,29 @@
+html 
+    head 
+        title GCloud File Upload Form
+    body
+        h5 Upload File to Google Cloud Storage
+        form(action="/upload/gcs-upload" method="post" enctype="multipart/form-data")
+            label(for="file") Choose file to upload:
+            input(type="file" name="file" id="file" required multiple)
+            br
+            label(for="sizes") Enter array sizes (optional):
+            input(type="text" name="sizes" placeholdrer="Enter array sizes (optional)")
+            br
+            button(type="submit") Upload File
+        script.
+            // You can add client-side JavaScript here if needed
+            form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                // You can add custom validation or actions before submitting the form
+                event.preventDefault();
+                file = document.getElementById('file').files;
+                if (file.length === 0) {
+                    alert('Please select a file to upload.');
+                    return;
+                }
+                if (file.length > 1) {
+                    form.action += (form.action.includes('?') ? '&' : '?') + 'array=true';
+                }
+                form.submit();
+            });
